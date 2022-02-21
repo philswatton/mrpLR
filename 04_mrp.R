@@ -14,7 +14,7 @@ bes <- readRDS("data/bes2.rds")
 frame <- readRDS("data/frame.rds")
 marginals <- readRDS("data/marginals.rds")
 extras <- readRDS("data/extras.rds") %>%
-  mutate(across(matches("17"), ~ case_when(is.na(.x) ~ 0,
+  mutate(across(matches("19"), ~ case_when(is.na(.x) ~ 0,
                                            T ~ .x)))
 
 
@@ -26,8 +26,8 @@ extras <- readRDS("data/extras.rds") %>%
 ## Formula ----
 model <- lrscale ~ (1|gender) + (1|age) + (1|nssec) + (1|qualifications) + (1|ethnicity) + (1|owns) +
   (1|constituency) +
-  perRemain + Con17 + SNP17 + Green17 + LD17 + PC17 + Other17 +
-  density
+  perRemain + Con19 + SNP19 + Green19 + LD19 + PC19 + Other19 +
+  density + perUnemployed + perManufacturing + perWhite
 
 
 ## Run regression ----
