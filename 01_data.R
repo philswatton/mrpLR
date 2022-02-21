@@ -56,10 +56,10 @@ marginals <- const %>%
          c11HouseOwned,
 
          # Vote Shares
-         Con17, Lab17, LD17, Green17, UKIP17, SNP17, PC17, Other17,
+         Con19, Lab19, LD19, Green19, Brexit19, UKIP19, SNP19, PC19, Other19,
 
          # Turnout
-         Turnout17,
+         Turnout19,
 
          # Variables to use in the model
          remainHanretty, c11Unemployed, c11IndustryManufacturing, c11PopulationDensity)
@@ -366,7 +366,7 @@ df <- df %>%
 marginals <- marginals %>%
   rename(constituency = ConstituencyName) %>%
   mutate(constituency = case_when(constituency == "Carmarthen West and Pembrokeshire South" ~ "Carmarthen West and South Pembrokeshire",
-                                  constituency == "Ynys M\xf4n" ~ "Ynys Mon",
+                                  !is.na(str_match(constituency, "Ynys")) ~ "Ynys Mon",
                                   T ~ constituency))
 
 
@@ -381,7 +381,7 @@ marginals <- marginals %>%
          perManufacturing = IndustryManufacturing,
          density = PopulationDensity) %>%
   mutate(across(starts_with("per"), ~.x/100),
-         across(matches("17"), ~.x/100),
+         across(matches("^(?!Age).*19$", perl=T), ~.x/100),
          density = density/100,
          region = to_character(region))
 
@@ -389,14 +389,17 @@ marginals <- marginals %>%
 ## Adding constituency-level variables to the BES ----
 
 extras <- marginals %>%
-  select(constituency, region, matches("17"), starts_with("per"), density, White) %>%
+  select(constituency, region, matches("^(?!Age).*19$", perl=T), starts_with("per"), density, White) %>%
   rename(perWhite = White)
 
 df <- left_join(df, extras) %>%
-  mutate(across(matches("17"), ~ case_when(is.na(.x) ~ 0,
-                                           T ~ .x)))
+  mutate(across(matches("^(?!Age).*19$", perl=T), ~ case_when(is.na(.x) ~ 0,
+                                                              T ~ .x)))
 
-marginals <- marginals %>% select(-starts_with("per"), -density, -region, -matches("17"))
+marginals <- marginals %>% select(-starts_with("per"), -density, -region,
+                                  -Con19, -Lab19, -LD19, -Green19, -Brexit19,
+                                  -UKIP19, -SNP19, -PC19, -Other19, -Turnout19) %>%
+  mutate(Electorate19 = Electorate19 * 100) #fixing a formatting error
 
 
 
