@@ -46,7 +46,7 @@ frame <- left_join(frame, extras)
 
 ## Generate predictions ----
 pred <- predict(result, frame, allow.new.levels = T)
-saveRDS(pred, "results/pred.RDS")
+saveRDS(pred, "results/pred.rds")
 frame$pred <- pred
 
 
