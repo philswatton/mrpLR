@@ -9,10 +9,10 @@ library(tidyverse)
 library(haven)
 library(scales)
 library(labelled)
-# library(sf)
 library(leaflet)
 library(parlitools)
 library(htmlwidgets)
+library(kableExtra)
 
 
 
@@ -31,6 +31,8 @@ clist <- c(red, yt, blu)
 
 
 # Datasets ----
+
+## reusults and constituency data
 df <- const %>%
   select(ConstituencyName, Region, Winner19, Con19, Lab19, LD19, Green19, Brexit19, UKIP19, SNP19, PC19, Other19) %>%
   rename(constituency = ConstituencyName,
@@ -51,25 +53,55 @@ hex <- west_hex_map %>%
   filter(region_name != "Northern Ireland") %>%
   select(-region_name) %>%
   left_join(df %>% select(constituency, Region, lrscale, winner) %>% mutate(lrscale = round(lrscale, 3))) %>%
-  mutate(colour = col_numeric(clist, range(hex$lrscale))(hex$lrscale))
+  mutate(colour = col_numeric(clist, range(lrscale))(lrscale))
 
 
 
 
-# Table ----
+# Density Plot ----
 
-df %>%
-  select(constituency, winner, lrscale) %>%
-  arrange(lrscale) %>% View()
+# ggplot(bes, aes(x=lrscale)) +
+#   geom_density()
+#
+# summary(bes$lrscale)
+#
+# quantile(bes$lrscale, c(0.025, 0.975), na.rm=T)
 
 
+# Results ----
+
+out <- hex %>%
+  as.data.frame() %>%
+  select(constituency, gss_code, lrscale, winner) %>%
+  arrange(lrscale)
+
+left <- out %>%
+  select(constituency, lrscale, winner) %>%
+  `[`(1:10,)
+
+right <- out %>%
+  select(constituency, lrscale, winner) %>%
+  `[`(623:632,)
 
 
-# Correlations ----
-cor(df[, 4:13]) # All
-cor(df[df$Region %in% 1:9, 4:13]) #England
-cor(df[df$Region %in% 10, 4:13]) #wales
-cor(df[df$Region %in% 11, 4:13]) #scotland
+## Results files
+saveRDS(out, "results/results.rds")
+write.csv(out, "results/results.csv")
+
+
+## HTML tables
+kable(left,
+      col.names = c("Constituency", "Left-Right", "2019 Winner"),
+      align = c("l","c","l"),
+      table.attr = 'style="width:70%; align-self:center;"')
+
+kable(right[10:1,],
+      row.names = F,
+      col.names = c("Constituency", "Left-Right", "2019 Winner"),
+      align = c("l","c","l"),
+      table.attr = 'style="width:70%; align-self:center;"')
+
+
 
 
 # Map ----
