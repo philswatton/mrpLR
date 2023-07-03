@@ -1,6 +1,6 @@
 # mrpLR
 
-This repository contains the code for my blog post on MRP, which can be found [at this link](). I've included in this repository the data after initially recoding the variables used but not the original data files. To find the original data files, you can find links of where to download the raw data. I've mainly avoided sharing these original files because I have no idea what my rights are here but I'm pretty sure I'm not allowed to share them! I've also included a brief explanation of the contents of this repository which should make it easier to navigate.
+This repository contains the code for a blog post on MRP, which has since been taken offline. I've included in this repository the data after initially recoding the variables used but not the original data files. To find the original data files, you can find links of where to download the raw data. I've mainly avoided sharing these original files because I have no idea what my rights are here but I'm pretty sure I'm not allowed to share them! I've also included a brief explanation of the contents of this repository which should make it easier to navigate.
 
 ## Raw Data
 
